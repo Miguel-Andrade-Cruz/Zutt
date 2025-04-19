@@ -2,16 +2,17 @@ import { ReactElement } from "react";
 
 type ItemProps = {
 
-  value: string
-  default?: boolean
+  id: string
+  value: string;
+  default?: boolean;
+  children: string;
 };
 
 type DropdownContainerProps = {
 
-  items: Array<ReactElement<ItemProps>>;
+  items: ReactElement<ItemProps>[];
   label: string;
-  children: ReactElement<ItemProps>;
 };
 
 
-export default DropdownContainerProps;
+export type {DropdownContainerProps, ItemProps};

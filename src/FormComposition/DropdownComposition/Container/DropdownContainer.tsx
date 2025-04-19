@@ -1,37 +1,51 @@
-import { ReactElement, useContext, useState } from 'react';
+import { ReactElement, useState } from 'react';
 
-import { FormContext } from '../../../FormComposition/Context/FormContext';
+// import { FormContext } from '../../../FormComposition/Context/FormContext';
 
-import DropdownContainerProps from './DropdownContainerProps';
+import { DropdownContainerProps, ItemProps } from './DropdownContainerProps';
 import ButtonContainer from '../../../ButtonComposition/Container/ButtonContainer';
 
-
-
-
 function DropdownContainer(props : DropdownContainerProps) {
-  const {formData, udpateForm} = useContext(FormContext);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+  const [selected, setSelected] = useState<ReactElement<ItemProps> | null>(null);
 
-  const default_option: ReactElement = props.items.find((item) => { return item.default === true;})
+  const default_option: ReactElement<ItemProps> = props.items.find(
+    (item: ReactElement<ItemProps>) => { return item.props.default === true;}
+  ) ?? props.items[0];
+
 
   return (
     <>
       <p>{props.label}</p>
-      <ButtonContainer>
+      <ButtonContainer onClick={() => handleClick()}>
+      {
+        selected == null
+          ? default_option
+          : selected
+      }
       </ButtonContainer>
+      {
+        isOpen == true &&
+        props.items.map(
+          (item: ReactElement<ItemProps>) => (
+            <div>
+              <ButtonContainer
+                onClick={() => {setSelected(item); handleClick();}}
+                key={item.props.id}
+              >
+                {item}
+              </ButtonContainer>
+            </div>
+          )
+        )
+      }
 
     </>
   );
 };
 
-
-
 export default DropdownContainer;
-
-<DropdownContainer label="Select a row"
-  items={[
-    <Item default id='1' value='ONE'>Row one</Item>
-  ]}
->
-
-</DropdownContainer>
